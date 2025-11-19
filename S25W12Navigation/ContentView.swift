@@ -1,28 +1,79 @@
 import SwiftUI
 
 struct ContentView: View {
+    var body: some View {
+        TabView {
+            SongView()
+                .tabItem {
+                    Image(systemName: "list.bullet")
+                    Text("Songs")
+                }
+            SingerView()
+                .tabItem {
+                    Image(systemName: "person")
+                    Text("Singer")
+                }
+        }
+    }
+}
+
+struct SongView: View {
     @State private var viewModel = SongViewModel()
     
     var body: some View {
-        NavigationStack {
-            List(viewModel.songs) { song in
-                NavigationLink(value: song) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(song.title)
-                                .font(.headline)
-                            Text(song.singer)
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                        }
+        NavigationStack(path: $viewModel.path) {
+            SongListView(viewModel: viewModel)
+            .navigationDestination(for: Song.self) { song in
+                SongDetailView(song: song)
+            }
+            .navigationTitle("ww노래")
+        }
+    }
+}
+
+struct SongListView: View {
+    let viewModel: SongViewModel
+    
+    var body: some View {
+        List(viewModel.songs) { song in
+            NavigationLink(value: song) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(song.title)
+                            .font(.headline)
+                        Text(song.singer)
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
                     }
                 }
-            }
-            .navigationDestination(for: Song.self) { song in SongDetailView(song: song)
             }
         }
     }
 }
+    
+//struct ContentView: View {
+//    @State private var viewModel = SongViewModel()
+//    
+//    var body: some View {
+//        NavigationStack {
+//            List(viewModel.songs) { song in
+//                NavigationLink(value: song) {
+//                    HStack {
+//                        VStack(alignment: .leading) {
+//                            Text(song.title)
+//                                .font(.headline)
+//                            Text(song.singer)
+//                                .font(.subheadline)
+//                                .foregroundColor(.gray)
+//                        }
+//                    }
+//                }
+//            }
+//            .navigationDestination(for: Song.self) { song in SongDetailView(song: song)
+//            }
+//        }
+//    }
+//}
 
 struct SongDetailView: View {
     let song: Song
@@ -51,6 +102,13 @@ struct SongDetailView: View {
         .navigationBarTitleDisplayMode(.large)
     }
 }
+
+struct SingerView: View {
+    var body: some View {
+        Text("Singer View")
+    }
+}
+
 
 #Preview {
     ContentView()
